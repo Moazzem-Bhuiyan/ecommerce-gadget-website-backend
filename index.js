@@ -1,17 +1,17 @@
-const express = require('express');
-const app = express()
-const port = 5000
-const cors = require("cors")
-
+const express = require("express");
+const app = express();
+const port = 5000;
+const cors = require("cors");
 
 // midleware
 
-app.use (cors());
+app.use(cors());
 app.use(express.json());
 
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
-const uri = "mongodb+srv://gadgetweb:8E0f1vNWvJqJD4Ny@cluster0.7kns6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri =
+  "mongodb+srv://gadgetweb:8E0f1vNWvJqJD4Ny@cluster0.7kns6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // const uri = 'mongodb://localhost:27017'
 
@@ -21,7 +21,7 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
 async function run() {
@@ -31,79 +31,61 @@ async function run() {
 
     // collection type start----
 
-    const cartsCollection = client.db("gadgetdb").collection("carts")
+    const cartsCollection = client.db("gadgetdb").collection("carts");
 
-    const cartsaddCollection = client.db("gadgetdb").collection("cartsadd")
-    const userCollection = client.db("gadgetdb").collection("users")
-    const userinfoCollection = client.db("gadgetdb").collection("usersinfo")
+    const cartsaddCollection = client.db("gadgetdb").collection("cartsadd");
+    const userCollection = client.db("gadgetdb").collection("users");
+    const userinfoCollection = client.db("gadgetdb").collection("usersinfo");
 
-    // userinfo saved data base 
+    // userinfo saved data base
 
-    app.post('/usersinfo',async (req, res) => {
-      const userinfo =req.body;
-      const result = await userinfoCollection.insertOne(userinfo)
-      res.send(result)
-      
+    app.post("/usersinfo", async (req, res) => {
+      const userinfo = req.body;
+      const result = await userinfoCollection.insertOne(userinfo);
+      res.send(result);
     });
 
+    // users related api start
 
-
-    // users related api start 
-
-    app.post('/user',async(req,res)=>{
-
-      const user =req.body;
+    app.post("/user", async (req, res) => {
+      const user = req.body;
 
       const result = await userCollection.insertOne(user);
-      res.send(result)
-    })
-
-
-    // carts /menu related Api ---
-    app.get('/carts', async(req, res) => {
-
-       try {
-        const  result= await cartsCollection.find().toArray();
-        res.send(result)
-        
-       } catch (error) {
-        
-        console.log('error' ,error)
-       }
-        
+      res.send(result);
     });
 
+    // carts /menu related Api ---
+    app.get("/carts", async (req, res) => {
+      try {
+        const result = await cartsCollection.find().toArray();
+        res.send(result);
+      } catch (error) {
+        console.log("error", error);
+      }
+    });
 
     // real carts related apii
 
-    app.post('/cartsadd', async(req, res) => {
+    app.post("/cartsadd", async (req, res) => {
+      const cartItem = req.body;
 
-        const cartItem = req.body
-
-        const result = await cartsaddCollection.insertOne(cartItem)
-        res.send(result)
-        
+      const result = await cartsaddCollection.insertOne(cartItem);
+      res.send(result);
     });
 
     // ui te cart dekhanor jnno api
 
-    app.get('/cartsadd',async (req, res) => {
-        
-        const result = await cartsaddCollection. find().toArray()
-        res.send(result)
-        
+    app.get("/cartsadd", async (req, res) => {
+      const result = await cartsaddCollection.find().toArray();
+      res.send(result);
     });
 
-    app.delete('/cartsadd/:id',async(req, res) => {
-        const id = req.params.id;
-        const query = {_id: new ObjectId (id)};
-        const result = await cartsaddCollection.deleteOne(query)
-        res.send(result);
-        
+    app.delete("/cartsadd/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await cartsaddCollection.deleteOne(query);
+      res.send(result);
     });
-
-
-
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
@@ -117,11 +99,10 @@ run().catch(console.dir);
 
 // basic setup
 
-app.get('/', (req, res) => {
-    res.send('Server Is Ruuning ')
-    
+app.get("/", (req, res) => {
+  res.send("Server Is Ruuning ");
 });
 
 app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
+  console.log(`Server started on port ${port}`);
 });
